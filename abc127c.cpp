@@ -22,6 +22,9 @@ int main()
     sort(L.begin(), L.end());
     sort(R.begin(), R.end());
 
+    long min = L.back();
+    long max = R.front();
+
     if (max - min < 0)
     {
         cout << 0 << endl;

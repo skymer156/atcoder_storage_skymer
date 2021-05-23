@@ -1,24 +1,26 @@
 #include <iostream>
-#include <vector>
+#include <string>
 #include <algorithm>
 using namespace std;
+
+string T[4] = {"dream","erase","eraser","dreamer"};
 
 int main(){
   
   string s;
   cin >> s;
   reverse(s.begin(),s.end());
-  vector<string> T = {"dream","erase","eraser","dreamer"};
   for (int i=0;i<4;i++){
       reverse(T[i].begin(),T[i].end());
   }
 
   bool ans = true;
-  for(int i=0;i < s.size();){
+  for(unsigned int i=0;i < s.size();){
       bool flag = false;
       for(int j=0;j< 4 ;j++){
-          if( s.substr(i,T[j].size()) == T[j] ){
-              i += T[j].size();
+          string ss = T[j];
+          if( s.substr(i,ss.size()) == ss ){
+              i += ss.size();
               flag = true;
           }
       }
@@ -29,9 +31,9 @@ int main(){
   }
 
   if(ans){
-      cout << "Yes" << endl;
+      cout << "YES" << endl;
   }else{
-      cout << "No" << endl;
+      cout << "NO" << endl;
   }
 
   return 0;
