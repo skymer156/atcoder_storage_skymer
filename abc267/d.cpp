@@ -1,87 +1,53 @@
 #include <iostream>
 #include <vector>
-#include <map>
-#include <algorithm>
 
 using namespace std;
 
 int main()
 {
-    long N;
-    cin >> N;
-    map<long, pair<int, long>> ma;
+    long N, M;
+    cin >> N >> M;
 
-    long t_max = 0;
-    for (long i = 0; i < N; i++)
+    vector<long> A(N, 0);
+
+    for (auto &a : A)
     {
-        long t, a;
-        int x;
-
-        cin >> t >> x >> a;
-        ma[t] = {x, a};
-        t_max = max(t_max, t);
+        cin >> a;
     }
 
-    vector<vector<long long>> dp(t_max + 1, vector<long long>(5, 0));
-    vector<vector<long>> dp_check(t_max + 1, vector<long>(5, 0));
+    // コンテスト中メモ
+    // ある値を抜いた時に最大となるものを選ぶ?
+    // 少なくともN-M抜く必要がある
+    // 抜く前後の値の変化は漸化式で表現することが可能.
+    
+    // コンテスト後メモ
+    // 抜く -> 追加していくに考え方を変える.
 
-    dp_check[0][0] = 1;
+    vector<vector<long long>> dp(2001, vector<long long>(2001, 0));
 
-    for (long i = 0; i < t_max; i++)
+    dp[0][0] = 0;
+    dp[0][1] = -1000000000000000000ll;
+
+    // 数列を全走査
+    for (int i = 1; i <= N; i++)
     {
-        for (int j = 0; j < 5; j++)
+        // i個めまでにj選んでいる時の重み付け和の値.
+        // わざわざmまでとかやらなくてもよく、nまでやっても問題なし。(答えの時にdp[n][m]を見るため)
+        for (int j = 0; j <= N; j++)
         {
-            if (dp_check[i][j] == 0)continue;
-
-            for (int k = -1; k < 2; k++)
-            {
-                int index = j + k;
-                if (index < 0)continue;
-                if (index >= 5)continue;
-                dp_check[i + 1][index] = 1;
-                //cout << "i " << i << " j " << j << " index " << index << endl;
-
-                // 次の時刻 i+1 にすぬけ君が出てくるか
-                if (ma.find(i + 1) != ma.end())
-                {
-                    // その座標は何か
-                    if (ma[i + 1].first != index){
-                        dp[i + 1][index] = max(dp[i + 1][index], dp[i][j]);
-                        continue;
-                    };
-
-                    // その座標の時, 前の値+Aと現在の値のmaxを取る
-                    dp[i + 1][index] = max(dp[i + 1][index], dp[i][j] + ma[i + 1].second);
-                }
-                else
-                {
-                    dp[i + 1][index] = max(dp[i + 1][index], dp[i][j]);
-                }
-            }
+            // 何も選んでいない
+            if (j == 0)
+                dp[i][0] = 0;
+            // 数列の数より選んだ数の方が多い
+            else if (j > i)
+                dp[i][j] = -1000000000000000000ll;
+            // i >= j で j!= 0の時。
+            else
+                // A[i]を選択しなかった時 : dp[i-1][j] (前と変わらない), A[i]を選択した時 : dp[i-1][j-1] + a[i-1] * j (一番右にj番目の値が追加される.)
+                dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - 1] + A[i - 1] * j);
         }
     }
-
-    auto ans = max_element(dp[t_max].begin(), dp[t_max].end());
-
-    cout << *ans << endl;
-
-    // for (auto &&i : dp)
-    // {
-    //     for (auto &&d : i)
-    //     {
-    //         cout << d << " ";
-    //     }
-    //     cout << endl;
-    // }
-    
-    // for (auto &&i : dp_check)
-    // {
-    //     for (auto &&d : i)
-    //     {
-    //         cout << d << " ";
-    //     }
-    //     cout << endl;
-    // }
+    cout << dp[N][M] << endl;
 
     return 0;
 }

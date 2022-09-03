@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <map>
 
 using namespace std;
 
@@ -8,7 +9,12 @@ int main()
     string s;
     cin >> s;
 
-    int index = s.size() / 2;
+    map<string, int> mp;
+    mp["Monday"] = 5;
+    mp["Tuesday"] = 4;
+    mp["Wednesday"] = 3;
+    mp["Thursday"] = 2;
+    mp["Friday"] = 1;
 
-    cout << s.substr(index, 1);
+    cout << mp[s] << endl;
 }
